@@ -1,3 +1,6 @@
+package tests
+
+import base.BaseTest
 import com.codeborne.selenide.Condition.*
 import com.codeborne.selenide.Condition
 import com.codeborne.selenide.Selenide.*
@@ -10,22 +13,28 @@ import org.openqa.selenium.interactions.Actions
 import java.math.BigDecimal
 import kotlin.random.Random
 import kotlin.test.assertEquals
+import org.example.pages.HomePage
+
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class UiTest {
-
-    @BeforeAll
-    fun setUp() {
-        open("http://demo.prestashop.com")
-        WebDriverRunner.getWebDriver().manage().window().maximize()
-    }
+class UiTest : BaseTest() {
+//
+//    @BeforeAll
+//    fun setUp() {
+//        open("http://demo.prestashop.com")
+//        WebDriverRunner.getWebDriver().manage().window().maximize()
+//    }
 
     @Test
     fun testEntireFlow() {
+        val homePage = HomePage()
+
         Assertions.assertTrue(title() == "PrestaShop Live Demo", "The title does not match")
-        `$`("#buttons > a.btn.btn-download").shouldBe(visible)
-        switchTo().frame("framelive")
+//        `$`("#buttons > a.btn.btn-download").shouldBe(visible)
+//        switchTo().frame("framelive")
         `$`("span.hidden-sm-down").shouldHave(text("Sign in"), Duration.ofSeconds(50)).click()
+//        homePage.clickSignInBtn()
+
         `$`("#content > div > a").shouldBe(visible).click()
         `$`("#field-firstname").shouldBe(visible).clear()
         `$`("#field-firstname").sendKeys("A")
@@ -40,6 +49,7 @@ class UiTest {
         `$`("input[name='psgdpr'").scrollTo().click()
         `$`("input[name='customer_privacy'").scrollTo().click()
         `$`("#customer-form > footer > button").shouldBe(visible).click()
+
         `$`("a.logout.hidden-sm-down").shouldBe(visible, Duration.ofSeconds(20))
         `$`("a.dropdown-item[href*='/6-accessories']").shouldBe(visible).click()
         `$x`("//a[text()='Home Accessories']").shouldBe(visible).click()
@@ -72,6 +82,9 @@ class UiTest {
         val productList = `$$`(".js-product")
         val itemCount = productList.size()
         println("Total items: $itemCount")
+
+//        WIP
+        homePage.printItemCount()
 
         val priceList = `$$`("span.price")
         for (priceSpan in priceList) {
@@ -137,8 +150,8 @@ class UiTest {
 
     }
 
-    @AfterAll
-    fun tearDown() {
-        closeWebDriver()
-    }
+//    @AfterAll
+//    fun tearDown() {
+//        closeWebDriver()
+//    }
 }
