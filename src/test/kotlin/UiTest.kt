@@ -25,9 +25,7 @@ class UiTest {
         Assertions.assertTrue(title() == "PrestaShop Live Demo", "The title does not match")
         `$`("#buttons > a.btn.btn-download").shouldBe(visible)
         switchTo().frame("framelive")
-//        `$`("span.hidden-sm-down").shouldHave(text("Sign in"), Duration.ofSeconds(50)).click()
         `$x`("//span[text()='Sign in']").shouldBe(visible, Duration.ofSeconds(50)).click()
-//        `$`("#content > div > a").shouldBe(visible).click()
         `$`("a[data-link-action='display-register-form']").shouldBe(visible).click()
 
         `$`("#field-firstname").shouldBe(visible).clear()
@@ -54,7 +52,7 @@ class UiTest {
         val sliderWidth = sliderParent.find(".ui-slider").size.width
         // WIP - retrieve min and max from attributes instead of these constants
         val totalRange = 42 - 14
-        val offsetPerUnit = sliderWidth / totalRange
+        val offsetPerUnit = sliderWidth.toFloat() / totalRange.toFloat()
         // Range: 18-23
         val leftOffset = ((18 - 14) * offsetPerUnit).toInt()
         val rightOffset = ((23 - 42) * offsetPerUnit).toInt()
@@ -65,9 +63,7 @@ class UiTest {
         var priceRange = `$`("#js-active-search-filters .filter-block").scrollTo().text()
         println("Price range after left slider: $priceRange")
 
-//        `$`(".faceted-slider").shouldBe(visible, Duration.ofSeconds(120))
         actions.clickAndHold(rightSlider).moveByOffset(rightOffset, 0).release().perform()
-//        `$`(".faceted-slider").shouldBe(visible).scrollTo()
 
         priceRange = `$`("#js-active-search-filters .filter-block").scrollTo().shouldNotHave(Condition.text(priceRange)).text()
         println("Price range after right slider: $priceRange")
@@ -78,7 +74,6 @@ class UiTest {
 
         val priceList = `$$`("span.price")
         for (priceSpan in priceList) {
-//            println("Price: ${price.text()}")
             val price = priceSpan.text().trim().substring(1).toBigDecimal()
             assertTrue(price >= BigDecimal(18) && price <= BigDecimal(23), "Price $price is out of range")
         }
@@ -86,18 +81,11 @@ class UiTest {
         val itemOne = Random.nextInt(0, itemCount)
         println("ItemOne: $itemOne")
 
-        val quickViewList = `$$`(".quick-view")
-        for (quickView in quickViewList) {
-            println(quickView)
-        }
-
         `$$`(".js-product").get(itemOne).shouldBe(visible).hover()
         `$$`(".quick-view").get(itemOne).shouldBe(visible, Duration.ofSeconds(50)).click()
         val priceItemOne = `$`("span.current-price-value").shouldBe(visible, Duration.ofSeconds(30)).text().trim().substring(1).toBigDecimal()
         println("Price: $priceItemOne")
         `$`("i.touchspin-up").shouldBe(clickable).click()
-//        `$`("input#quantity_wanted").shouldNotHave(Condition.text("1"))
-//        sleep(3000)
         `$`("input#quantity_wanted").shouldNotHave(Condition.value("1"))
 
         screenshot("increaseItemCount")
@@ -130,9 +118,14 @@ class UiTest {
         assertEquals(expectedTotal, totalValue)
 
         `$x`("//a[text()='Proceed to checkout']").shouldBe(visible).click()
+
+        `$`("#field-id_country").selectOption("France")
+        `$`("#field-id_country option[value='8']").shouldBe(Condition.selected)
+
         `$`("#field-address1").scrollTo().setValue("123 Main Street")
         `$`("#field-postcode").scrollTo().setValue("12345")
         `$`("#field-city").scrollTo().setValue("City")
+
         `$`("button[name='confirm-addresses']").scrollTo().shouldBe(visible).click()
         `$`("button[name='confirmDeliveryOption']").scrollTo().shouldBe(visible).click()
         `$x`("//span[text()='Pay by Check']").shouldBe(visible).click()
@@ -148,8 +141,7 @@ class UiTest {
 
         `$`("a.logout").scrollTo().click()
 
-        `$`("span.hidden-sm-down").shouldHave(text("Sign in")).shouldBe(visible)
-
+        `$x`("//span[text()='Sign in']").shouldBe(visible, Duration.ofSeconds(20))
     }
 
     @AfterAll
