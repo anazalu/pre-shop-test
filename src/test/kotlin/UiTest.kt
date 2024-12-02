@@ -25,8 +25,11 @@ class UiTest {
         Assertions.assertTrue(title() == "PrestaShop Live Demo", "The title does not match")
         `$`("#buttons > a.btn.btn-download").shouldBe(visible)
         switchTo().frame("framelive")
-        `$`("span.hidden-sm-down").shouldHave(text("Sign in"), Duration.ofSeconds(50)).click()
-        `$`("#content > div > a").shouldBe(visible).click()
+//        `$`("span.hidden-sm-down").shouldHave(text("Sign in"), Duration.ofSeconds(50)).click()
+        `$x`("//span[text()='Sign in']").shouldBe(visible, Duration.ofSeconds(50)).click()
+//        `$`("#content > div > a").shouldBe(visible).click()
+        `$`("a[data-link-action='display-register-form']").shouldBe(visible).click()
+
         `$`("#field-firstname").shouldBe(visible).clear()
         `$`("#field-firstname").sendKeys("A")
         `$`("#field-lastname").shouldBe(visible).clear()
@@ -37,8 +40,8 @@ class UiTest {
         `$`("#field-password").shouldBe(visible).clear()
         `$`("#field-password").shouldBe(visible).clear()
         `$`("#field-password").sendKeys("1userUser!")
-        `$`("input[name='psgdpr'").scrollTo().click()
-        `$`("input[name='customer_privacy'").scrollTo().click()
+        `$`("input[name='psgdpr']").scrollTo().click()
+        `$`("input[name='customer_privacy']").scrollTo().click()
         `$`("#customer-form > footer > button").shouldBe(visible).click()
         `$`("a.logout.hidden-sm-down").shouldBe(visible, Duration.ofSeconds(20))
         `$`("a.dropdown-item[href*='/6-accessories']").shouldBe(visible).click()
@@ -81,17 +84,27 @@ class UiTest {
         }
 
         val itemOne = Random.nextInt(0, itemCount)
+        println("ItemOne: $itemOne")
+
+        val quickViewList = `$$`(".quick-view")
+        for (quickView in quickViewList) {
+            println(quickView)
+        }
 
         `$$`(".js-product").get(itemOne).shouldBe(visible).hover()
         `$$`(".quick-view").get(itemOne).shouldBe(visible, Duration.ofSeconds(50)).click()
-        val priceItemOne = `$`("span.current-price-value").shouldBe(visible).text().trim().substring(1).toBigDecimal()
+        val priceItemOne = `$`("span.current-price-value").shouldBe(visible, Duration.ofSeconds(30)).text().trim().substring(1).toBigDecimal()
         println("Price: $priceItemOne")
         `$`("i.touchspin-up").shouldBe(clickable).click()
+//        `$`("input#quantity_wanted").shouldNotHave(Condition.text("1"))
+//        sleep(3000)
+        `$`("input#quantity_wanted").shouldNotHave(Condition.value("1"))
+
         screenshot("increaseItemCount")
         `$`("button.add-to-cart").shouldBe(visible).click()
         val priceItemOneSubtotal = `$`("span.subtotal.value").shouldBe(visible).text().trim().substring(1).toBigDecimal()
         println("Subtotal: $priceItemOneSubtotal")
-        assertEquals(priceItemOne.multiply(BigDecimal(2)), priceItemOneSubtotal)
+        assertEquals(priceItemOne * BigDecimal(2), priceItemOneSubtotal)
         `$x`("//button[text()='Continue shopping']").shouldBe(visible).click()
 
         `$`("#js-active-search-filters .filter-block").shouldBe(visible)
@@ -99,11 +112,13 @@ class UiTest {
         var itemTwo: Int
         do {
             itemTwo = Random.nextInt(0, itemCount)
-        } while (itemTwo == itemOne) // Ensure second is unique
+        } while (itemTwo == itemOne)
+        println("ItemTwo: $itemTwo")
 
         `$$`(".js-product").get(itemTwo).shouldBe(visible).hover()
         `$$`(".quick-view").get(itemTwo).shouldBe(visible).click()
-        val priceItemTwo = `$`("span.current-price-value").shouldBe(visible).text().trim().substring(1).toBigDecimal()
+
+        val priceItemTwo = `$`("span.current-price-value").shouldBe(visible, Duration.ofSeconds(30)).text().trim().substring(1).toBigDecimal()
         println("Price item two: $priceItemTwo")
         `$`("button.add-to-cart").shouldBe(visible).click()
         `$x`("//a[text()='Proceed to checkout']").shouldBe(visible).click()
