@@ -7,3 +7,6 @@ src/test/kotlin/UiTest.kt
 ```
 ./gradlew test
 ```
+
+### Test run video evidence:
+https://drive.google.com/file/d/1PjL6e27znu3xblxKWpcRJd-VRvtOFO29/view?usp=sharing
