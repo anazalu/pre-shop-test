@@ -13,14 +13,10 @@ open class BaseTest {
         @JvmStatic
         @BeforeAll
         public fun setUp(): Unit {
+            // Configuration.startMaximized = true
+            // Configuration.baseUrl = "http://demo.prestashop.com"
             open("http://demo.prestashop.com")
             WebDriverRunner.getWebDriver().manage().window().maximize()
-        }
-
-        @JvmStatic
-        @AfterAll
-        fun tearDown(): Unit {
-            closeWebDriver()
         }
     }
 }

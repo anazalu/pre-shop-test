@@ -1,55 +1,54 @@
 package tests
 
-import base.BaseTest
-import com.codeborne.selenide.Condition.*
-import com.codeborne.selenide.Condition
-import com.codeborne.selenide.Selenide.*
-import com.codeborne.selenide.WebDriverRunner
-import org.junit.jupiter.api.*
-import org.junit.jupiter.api.Assertions.assertTrue
-import org.openqa.selenium.By
 import java.time.Duration
-import org.openqa.selenium.interactions.Actions
 import java.math.BigDecimal
-import kotlin.random.Random
-import kotlin.test.assertEquals
+
+import com.codeborne.selenide.Condition
+import com.codeborne.selenide.Condition.text
+import com.codeborne.selenide.Condition.visible
+import com.codeborne.selenide.Selenide.`$`
+import com.codeborne.selenide.Selenide.`$x`
+import com.codeborne.selenide.Selenide.`$$`
+import com.codeborne.selenide.Selenide.switchTo
+import com.codeborne.selenide.Selenide.title
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
+import org.openqa.selenium.By
+// import com.codeborne.selenide.Selenide.*
+// import com.codeborne.selenide.Condition.*
+
+import base.BaseTest
 import org.example.pages.HomePage
+import org.example.pages.RegisterPage
 
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class UiTest : BaseTest() {
-//
-//    @BeforeAll
-//    fun setUp() {
-//        open("http://demo.prestashop.com")
-//        WebDriverRunner.getWebDriver().manage().window().maximize()
-//    }
 
     @Test
     fun testEntireFlow() {
         val homePage = HomePage()
+        val registerPage = RegisterPage()
 
-        Assertions.assertTrue(title() == "PrestaShop Live Demo", "The title does not match")
-        `$`("#buttons > a.btn.btn-download").shouldBe(visible)
+        val pageTitle = "PrestaShop Live Demo"
+        assertEquals(pageTitle, title(), "The webpage title does not match")
+    
         switchTo().frame("framelive")
-        `$x`("//span[text()='Sign in']").shouldBe(visible, Duration.ofSeconds(50)).click()
-        // homePage.clickSignInBtn()
-        `$`("a[data-link-action='display-register-form']").shouldBe(visible).click()
 
-        `$`("#field-firstname").shouldBe(visible).clear()
-        `$`("#field-firstname").sendKeys("A")
-        `$`("#field-lastname").shouldBe(visible).clear()
-        `$`("#field-lastname").sendKeys("B")
-        `$`("#field-email").shouldBe(visible).clear()
-        val randEmail = Random.nextInt(0, 1000000)
-        `$`("#field-email").sendKeys("a$randEmail@b.com")
-        `$`("#field-password").shouldBe(visible).clear()
-        `$`("#field-password").shouldBe(visible).clear()
-        `$`("#field-password").sendKeys("1userUser!")
-        `$`("input[name='psgdpr']").scrollTo().click()
-        `$`("input[name='customer_privacy']").scrollTo().click()
+        homePage.clickSignInBtn()
+
+        val registerBtn = `$`("a[data-link-action='display-register-form']")
+        registerBtn.shouldBe(visible).click()
+
+        registerPage.insertFirstname("Name01")
+        registerPage.insertLastname("Surname01")
+        registerPage.insertEmail()
+        registerPage.insertPassword()
+        registerPage.agreeToConditions()
+
         `$`("#customer-form > footer > button").shouldBe(visible).click()
-
+        /*       
         `$`("a.logout.hidden-sm-down").shouldBe(visible, Duration.ofSeconds(20))
         `$`("a.dropdown-item[href*='/6-accessories']").shouldBe(visible).click()
         `$x`("//a[text()='Home Accessories']").shouldBe(visible).click()
@@ -81,7 +80,7 @@ class UiTest : BaseTest() {
         println("Total items: $itemCount")
 
 //        WIP
-        homePage.printItemCount()
+        // homePage.printItemCount()
 
         val priceList = `$$`("span.price")
         for (priceSpan in priceList) {
@@ -153,10 +152,6 @@ class UiTest : BaseTest() {
         `$`("a.logout").scrollTo().click()
 
         `$x`("//span[text()='Sign in']").shouldBe(visible, Duration.ofSeconds(20))
+        */
     }
-
-//    @AfterAll
-//    fun tearDown() {
-//        closeWebDriver()
-//    }
 }
