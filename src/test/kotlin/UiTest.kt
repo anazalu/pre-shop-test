@@ -57,13 +57,12 @@ class UiTest {
         val leftOffset = ((18 - 14) * offsetPerUnit).toInt()
         val rightOffset = ((23 - 42) * offsetPerUnit).toInt()
 
-        val actions = Actions(WebDriverRunner.getWebDriver())
-        actions.clickAndHold(leftSlider).moveByOffset(leftOffset, 0).release().perform()
+        actions().clickAndHold(leftSlider).moveByOffset(leftOffset, 0).release().perform()
 
         var priceRange = `$`("#js-active-search-filters .filter-block").scrollTo().text()
         println("Price range after left slider: $priceRange")
 
-        actions.clickAndHold(rightSlider).moveByOffset(rightOffset, 0).release().perform()
+        actions().clickAndHold(rightSlider).moveByOffset(rightOffset, 0).release().perform()
 
         priceRange = `$`("#js-active-search-filters .filter-block").scrollTo().shouldNotHave(Condition.text(priceRange)).text()
         println("Price range after right slider: $priceRange")
