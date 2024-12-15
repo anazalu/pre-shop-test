@@ -39,7 +39,7 @@ public class LoginPage {
     }
         
     fun insertEmail() {
-        val randEmail = Random.nextInt(0, 9999)
+        val randEmail = Random.nextInt(1111, 9999)
         emailField.shouldBe(visible).clear()
         emailField.sendKeys("user$randEmail@example.com")
     }

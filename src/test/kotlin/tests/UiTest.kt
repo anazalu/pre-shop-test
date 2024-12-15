@@ -1,24 +1,16 @@
 package tests
 
-import java.time.Duration
-import java.math.BigDecimal
-
 import com.codeborne.selenide.Condition
 import com.codeborne.selenide.Condition.text
 import com.codeborne.selenide.Condition.visible
-import com.codeborne.selenide.Selenide.`$`
-import com.codeborne.selenide.Selenide.`$x`
-import com.codeborne.selenide.Selenide.`$$`
-import com.codeborne.selenide.Selenide.switchTo
-import com.codeborne.selenide.Selenide.title
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
-import org.openqa.selenium.By
 // import com.codeborne.selenide.Selenide.*
 // import com.codeborne.selenide.Condition.*
 
 import base.BaseTest
+import com.codeborne.selenide.Selenide.*
 import org.example.pages.HomePage
 import org.example.pages.LoginPage
 
@@ -46,24 +38,12 @@ class UiTest : BaseTest() {
         homePage.selectHomeAccessories()
         homePage.validateHomeAccessoriesDisplayed()
 
-        /*       
-        val sliderParent = `$`(".faceted-slider")
-        val leftSlider = sliderParent.find(By.xpath(".//a[contains(@class, 'ui-slider-handle')][1]")).scrollTo()
-        val rightSlider = sliderParent.find(By.xpath(".//a[contains(@class, 'ui-slider-handle')][2]")).scrollTo()
-        val sliderWidth = sliderParent.find(".ui-slider").size.width
-        // WIP - retrieve min and max from attributes instead of these constants
-        val totalRange = 42 - 14
-        val offsetPerUnit = sliderWidth.toFloat() / totalRange.toFloat()
-        // Range: 18-23
-        val leftOffset = ((18 - 14) * offsetPerUnit).toInt()
-        val rightOffset = ((23 - 42) * offsetPerUnit).toInt()
+        homePage.selectMinPrice(18)
+        homePage.selectMaxPrice(23)
 
-        actions().clickAndHold(leftSlider).moveByOffset(leftOffset, 0).release().perform()
-
+        /*
         var priceRange = `$`("#js-active-search-filters .filter-block").scrollTo().text()
         println("Price range after left slider: $priceRange")
-
-        actions().clickAndHold(rightSlider).moveByOffset(rightOffset, 0).release().perform()
 
         priceRange = `$`("#js-active-search-filters .filter-block").scrollTo().shouldNotHave(Condition.text(priceRange)).text()
         println("Price range after right slider: $priceRange")
@@ -71,9 +51,6 @@ class UiTest : BaseTest() {
         val productList = `$$`(".js-product")
         val itemCount = productList.size()
         println("Total items: $itemCount")
-
-//        WIP
-        // homePage.printItemCount()
 
         val priceList = `$$`("span.price")
         for (priceSpan in priceList) {
