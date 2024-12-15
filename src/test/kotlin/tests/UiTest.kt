@@ -41,10 +41,10 @@ class UiTest : BaseTest() {
         homePage.selectMinPrice(18)
         homePage.selectMaxPrice(23)
 
-        /*
+        
         var priceRange = `$`("#js-active-search-filters .filter-block").scrollTo().text()
         println("Price range after left slider: $priceRange")
-
+/*
         priceRange = `$`("#js-active-search-filters .filter-block").scrollTo().shouldNotHave(Condition.text(priceRange)).text()
         println("Price range after right slider: $priceRange")
 
