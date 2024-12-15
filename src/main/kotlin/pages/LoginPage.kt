@@ -1,25 +1,32 @@
 package org.example.pages
 
-import java.time.Duration
-
 import com.codeborne.selenide.Selenide.`$`
-import com.codeborne.selenide.Selenide.`$x`
-import com.codeborne.selenide.Selenide.`$$`
-
-import com.codeborne.selenide.Condition.text
 import com.codeborne.selenide.Condition.visible
-import com.codeborne.selenide.Condition
 
 import kotlin.random.Random
 
-public class RegisterPage {
+public class LoginPage {
+    val startRegistrationBtn = `$`("a[data-link-action='display-register-form']")
     val firstnameField = `$`("#field-firstname")
     val lastnameField = `$`("#field-lastname")
-    val emailField = `$`("#field-email")    
-    val randEmail = Random.nextInt(0, 9999)
+    val emailField = `$`("#field-email")
     val pwdField = `$`("#field-password")
     val gdprCheckbox = `$`("input[name='psgdpr']")
     val privacyCheckbox = `$`("input[name='customer_privacy']")
+    val confirmRegisterBtn = `$`("#customer-form > footer > button")
+
+    fun startRegistration() {
+        startRegistrationBtn.shouldBe(visible).click()
+    }
+
+    fun completeRegistration(firstName: String, lastName: String) {
+        insertFirstname(firstName)
+        insertLastname(lastName)
+        insertEmail()
+        insertPassword()
+        agreeToConditions()
+        clickConfirmRegistration()
+    }
 
     fun insertFirstname(firstName: String) {
         firstnameField.shouldBe(visible).clear()
@@ -32,6 +39,7 @@ public class RegisterPage {
     }
         
     fun insertEmail() {
+        val randEmail = Random.nextInt(0, 9999)
         emailField.shouldBe(visible).clear()
         emailField.sendKeys("user$randEmail@example.com")
     }
@@ -44,5 +52,9 @@ public class RegisterPage {
     fun agreeToConditions() {
         gdprCheckbox.scrollTo().click()
         privacyCheckbox.scrollTo().click()
+    }
+
+    fun clickConfirmRegistration() {
+        confirmRegisterBtn.shouldBe(visible).click()
     }
 }

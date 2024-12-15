@@ -20,7 +20,7 @@ import org.openqa.selenium.By
 
 import base.BaseTest
 import org.example.pages.HomePage
-import org.example.pages.RegisterPage
+import org.example.pages.LoginPage
 
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -29,7 +29,7 @@ class UiTest : BaseTest() {
     @Test
     fun testEntireFlow() {
         val homePage = HomePage()
-        val registerPage = RegisterPage()
+        val loginPage = LoginPage()
 
         val pageTitle = "PrestaShop Live Demo"
         assertEquals(pageTitle, title(), "The webpage title does not match")
@@ -38,22 +38,15 @@ class UiTest : BaseTest() {
 
         homePage.clickSignInBtn()
 
-        val registerBtn = `$`("a[data-link-action='display-register-form']")
-        registerBtn.shouldBe(visible).click()
+        loginPage.startRegistration()
+        loginPage.completeRegistration("MyFirstName", "MyLastName")
 
-        registerPage.insertFirstname("Name01")
-        registerPage.insertLastname("Surname01")
-        registerPage.insertEmail()
-        registerPage.insertPassword()
-        registerPage.agreeToConditions()
+        homePage.validateUserIsLoggedIn()
+        homePage.selectAccessories()
+        homePage.selectHomeAccessories()
+        homePage.validateHomeAccessoriesDisplayed()
 
-        `$`("#customer-form > footer > button").shouldBe(visible).click()
         /*       
-        `$`("a.logout.hidden-sm-down").shouldBe(visible, Duration.ofSeconds(20))
-        `$`("a.dropdown-item[href*='/6-accessories']").shouldBe(visible).click()
-        `$x`("//a[text()='Home Accessories']").shouldBe(visible).click()
-        `$x`("//h1[text()='Home Accessories']").shouldBe(visible)
-
         val sliderParent = `$`(".faceted-slider")
         val leftSlider = sliderParent.find(By.xpath(".//a[contains(@class, 'ui-slider-handle')][1]")).scrollTo()
         val rightSlider = sliderParent.find(By.xpath(".//a[contains(@class, 'ui-slider-handle')][2]")).scrollTo()
