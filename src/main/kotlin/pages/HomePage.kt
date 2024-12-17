@@ -18,35 +18,32 @@ public class HomePage {
     private val homeAccessoriesBtn = `$x`("//a[text()='Home Accessories']")
     private val homeAccessoriesHeading = `$x`("//h1[text()='Home Accessories']")
     private val sliderParent = `$`(".faceted-slider")
-
-//    private val productList = `$$`(".js-product")
-//    private val itemCount = productList.size()
-
-    // WIP - retrieve min and max from attributes instead of these constants
+    private val productList = `$$`(".js-product")
+    private val itemCount = productList.size()
+    val priceList = `$$`("span.price")
+    // WIP - retrieve min and max from attributes instead of these constants:
     private val defaultMinPrice: Int = 14
     private val defaultMaxPrice: Int = 42
 
-    private fun calculateOffset(): Int {
+
+
+    private fun calculateSliderOffset(): Float {
         val sliderWidth = sliderParent.find(".ui-slider").size.width
         val totalRange = defaultMaxPrice - defaultMinPrice
-        return (sliderWidth.toFloat() / totalRange.toFloat()).toInt()
+        return sliderWidth.toFloat() / totalRange.toFloat()
     }
 
     fun selectMinPrice(targetMinPrice: Int) {
-        val leftOffset = (targetMinPrice - defaultMinPrice) * calculateOffset()
+        val leftOffset = (targetMinPrice - defaultMinPrice) * calculateSliderOffset()
         val leftSlider = sliderParent.`$x`(".//a[contains(@class, 'ui-slider-handle')][1]").scrollTo()
-        actions().clickAndHold(leftSlider).moveByOffset(leftOffset, 0).release().perform()
+        actions().clickAndHold(leftSlider).moveByOffset(leftOffset.toInt(), 0).release().perform()
     }
 
     fun selectMaxPrice(targetMaxPrice: Int) {
-        val rightOffset = (targetMaxPrice - defaultMaxPrice) * calculateOffset()
+        val rightOffset = (targetMaxPrice - defaultMaxPrice) * calculateSliderOffset()
         val rightSlider = sliderParent.`$x`(".//a[contains(@class, 'ui-slider-handle')][2]").scrollTo()
-        actions().clickAndHold(rightSlider).moveByOffset(rightOffset, 0).release().perform()
+        actions().clickAndHold(rightSlider).moveByOffset(rightOffset.toInt(), 0).release().perform()
     }
-
-    // fun printItemCount() {
-    //     println("Total items printed from HomePage class: $itemCount")
-    // }
 
     //===========================================
     fun clickSignInBtn() {
