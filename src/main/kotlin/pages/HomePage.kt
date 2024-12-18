@@ -27,23 +27,6 @@ public class HomePage {
 
 
 
-    private fun calculateSliderOffset(): Float {
-        val sliderWidth = sliderParent.find(".ui-slider").size.width
-        val totalRange = defaultMaxPrice - defaultMinPrice
-        return sliderWidth.toFloat() / totalRange.toFloat()
-    }
-
-    fun selectMinPrice(targetMinPrice: Int) {
-        val leftOffset = (targetMinPrice - defaultMinPrice) * calculateSliderOffset()
-        val leftSlider = sliderParent.`$x`(".//a[contains(@class, 'ui-slider-handle')][1]").scrollTo()
-        actions().clickAndHold(leftSlider).moveByOffset(leftOffset.toInt(), 0).release().perform()
-    }
-
-    fun selectMaxPrice(targetMaxPrice: Int) {
-        val rightOffset = (targetMaxPrice - defaultMaxPrice) * calculateSliderOffset()
-        val rightSlider = sliderParent.`$x`(".//a[contains(@class, 'ui-slider-handle')][2]").scrollTo()
-        actions().clickAndHold(rightSlider).moveByOffset(rightOffset.toInt(), 0).release().perform()
-    }
 
     //===========================================
     fun clickSignInBtn() {
@@ -64,5 +47,23 @@ public class HomePage {
 
     fun validateHomeAccessoriesDisplayed() {
         homeAccessoriesHeading.shouldBe(visible)
+    }
+
+    private fun calculateSliderOffset(): Float {
+        val sliderWidth = sliderParent.find(".ui-slider").size.width
+        val totalRange = defaultMaxPrice - defaultMinPrice
+        return sliderWidth.toFloat() / totalRange.toFloat()
+    }
+
+    fun selectMinPrice(targetMinPrice: Int) {
+        val leftOffset = (targetMinPrice - defaultMinPrice) * calculateSliderOffset()
+        val leftSlider = sliderParent.`$x`(".//a[contains(@class, 'ui-slider-handle')][1]").scrollTo()
+        actions().clickAndHold(leftSlider).moveByOffset(leftOffset.toInt(), 0).release().perform()
+    }
+
+    fun selectMaxPrice(targetMaxPrice: Int) {
+        val rightOffset = (targetMaxPrice - defaultMaxPrice) * calculateSliderOffset()
+        val rightSlider = sliderParent.`$x`(".//a[contains(@class, 'ui-slider-handle')][2]").scrollTo()
+        actions().clickAndHold(rightSlider).moveByOffset(rightOffset.toInt(), 0).release().perform()
     }
 }

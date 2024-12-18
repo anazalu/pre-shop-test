@@ -29,8 +29,8 @@ class UiTest : BaseTest() {
         val homePage = HomePage()
         val loginPage = LoginPage()
         val pageTitle = "PrestaShop Live Demo"
-//        val startPrice = 18
-//        val endPrice = 23
+        val selectedMinPrice = 18
+        val selectedMaxPrice = 23
 
         assertEquals(pageTitle, title(), "The webpage title does not match")
     
@@ -46,11 +46,11 @@ class UiTest : BaseTest() {
         homePage.selectHomeAccessories()
         homePage.validateHomeAccessoriesDisplayed()
 
-        homePage.selectMinPrice(18)
+        homePage.selectMinPrice(selectedMinPrice)
         var priceRange = `$`("#js-active-search-filters .filter-block").scrollTo().text()
         println("Price range after left slider: $priceRange")
 
-        homePage.selectMaxPrice(23)
+        homePage.selectMaxPrice(selectedMaxPrice)
         priceRange = `$`("#js-active-search-filters .filter-block")
             .scrollTo()
             .shouldNotHave(Condition.text(priceRange))
@@ -65,22 +65,13 @@ class UiTest : BaseTest() {
                     assertInRange(price, targetMinPrice, targetMaxPrice, "Price out of range.")
                 }
             } catch (e: NumberFormatException) {
-                println("Error: Could not parse the price as a valid number. Check the format.")
+                throw IllegalArgumentException("Error: Could not parse the price as a valid number. Check the format.")
             }
         }
 
-        validatePricesAreWithinRange(BigDecimal(18), BigDecimal(23))
+        validatePricesAreWithinRange(BigDecimal(selectedMinPrice), BigDecimal(selectedMaxPrice))
 
         /*
-                val productList = `$$`(".js-product")
-                val itemCount = productList.size()
-                println("Total items: $itemCount")
-                val priceList = `$$`("span.price")
-                for (priceSpan in priceList) {
-                    val price = priceSpan.text().trim().substring(1).toBigDecimal()
-                    assertTrue(price >= BigDecimal(18) && price <= BigDecimal(23), "Price $price is out of range")
-                }
-
                 val itemOne = Random.nextInt(0, itemCount)
                 println("ItemOne: $itemOne")
 
