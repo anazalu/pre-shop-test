@@ -14,6 +14,7 @@ import org.junit.jupiter.api.TestInstance
 import base.BaseTest
 import org.example.pages.HomePage
 import org.example.pages.LoginPage
+import kotlin.random.Random
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class UiTest : BaseTest() {
@@ -61,7 +62,7 @@ class UiTest : BaseTest() {
             try {
                 for (priceSpan in homePage.priceList) {
                     val price = priceSpan.text().trim().substring(1).toBigDecimal()
-                    println("Current price: $price")
+                    println("Current price: $price is within range: $targetMinPrice - $targetMaxPrice")
                     assertInRange(price, targetMinPrice, targetMaxPrice, "Price out of range.")
                 }
             } catch (e: NumberFormatException) {
@@ -70,6 +71,14 @@ class UiTest : BaseTest() {
         }
 
         validatePricesAreWithinRange(BigDecimal(selectedMinPrice), BigDecimal(selectedMaxPrice))
+
+//        val itemRandom = Random.nextInt(0, homePage.itemCount)
+        val itemRandom = 0
+        var runningTotal = BigDecimal(0)
+
+        val currPrice = homePage.openQuickViewAndSavePrice(itemRandom)
+        runningTotal += currPrice
+        println("RunningTotal: $runningTotal")
 
         /*
                 val itemOne = Random.nextInt(0, itemCount)

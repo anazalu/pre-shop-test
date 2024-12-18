@@ -10,6 +10,7 @@ import com.codeborne.selenide.Selenide.actions
 import com.codeborne.selenide.Condition.text
 import com.codeborne.selenide.Condition.visible
 import com.codeborne.selenide.Condition
+import kotlin.random.Random
 
 public class HomePage {
     private val signInBtn = `$x`("//span[text()='Sign in']")
@@ -19,14 +20,24 @@ public class HomePage {
     private val homeAccessoriesHeading = `$x`("//h1[text()='Home Accessories']")
     private val sliderParent = `$`(".faceted-slider")
     private val productList = `$$`(".js-product")
-    private val itemCount = productList.size()
+    val itemCount = productList.size()
     val priceList = `$$`("span.price")
     // WIP - retrieve min and max from attributes instead of these constants:
     private val defaultMinPrice: Int = 14
     private val defaultMaxPrice: Int = 42
 
-
-
+    fun openQuickViewAndSavePrice(itemNumber: Int): BigDecimal {
+        println("ItemNumber: $itemNumber")
+        `$$`(".js-product").get(itemNumber).shouldBe(visible).hover()
+        `$$`(".quick-view").get(itemNumber).shouldBe(visible, Duration.ofSeconds(50)).click()
+        val priceCurrentItem = `$`("span.current-price-value")
+            .shouldBe(visible, Duration.ofSeconds(30))
+            .text().trim()
+            .substring(1)
+            .toBigDecimal()
+        println("Price from HomePage class: $priceCurrentItem")
+        return priceCurrentItem
+    }
 
     //===========================================
     fun clickSignInBtn() {
