@@ -82,7 +82,7 @@ class UiTest : BaseTest() {
         var expectedSubtotal = BigDecimal(0)
 
         val actualPrice = homePage.openQuickViewAndSavePrice(itemRandom)
-        var itemCountToAdd = 3
+        var itemCountToAdd = 4
 
         quickViewModal.addToCart(itemCountToAdd)
         expectedSubtotal += actualPrice * BigDecimal(itemCountToAdd)
