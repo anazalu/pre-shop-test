@@ -6,14 +6,14 @@ import com.codeborne.selenide.Condition.visible
 import kotlin.random.Random
 
 public class LoginPage {
-    val startRegistrationBtn = `$`("a[data-link-action='display-register-form']")
-    val firstnameField = `$`("#field-firstname")
-    val lastnameField = `$`("#field-lastname")
-    val emailField = `$`("#field-email")
-    val pwdField = `$`("#field-password")
-    val gdprCheckbox = `$`("input[name='psgdpr']")
-    val privacyCheckbox = `$`("input[name='customer_privacy']")
-    val confirmRegisterBtn = `$`("#customer-form > footer > button")
+    private val startRegistrationBtn = `$`("a[data-link-action='display-register-form']")
+    private val firstnameField = `$`("#field-firstname")
+    private val lastnameField = `$`("#field-lastname")
+    private val emailField = `$`("#field-email")
+    private val pwdField = `$`("#field-password")
+    private val gdprCheckbox = `$`("input[name='psgdpr']")
+    private val privacyCheckbox = `$`("input[name='customer_privacy']")
+    private val confirmRegisterBtn = `$`("#customer-form > footer > button")
 
     fun startRegistration() {
         startRegistrationBtn.shouldBe(visible).click()
@@ -28,33 +28,33 @@ public class LoginPage {
         clickConfirmRegistration()
     }
 
-    fun insertFirstname(firstName: String) {
+    private fun insertFirstname(firstName: String) {
         firstnameField.shouldBe(visible).clear()
         firstnameField.sendKeys(firstName)
     }
         
-    fun insertLastname(lastName: String) {
+    private fun insertLastname(lastName: String) {
         lastnameField.shouldBe(visible).clear()
         lastnameField.sendKeys(lastName)
     }
         
-    fun insertEmail() {
+    private fun insertEmail() {
         val randEmail = Random.nextInt(1111, 9999)
         emailField.shouldBe(visible).clear()
         emailField.sendKeys("user$randEmail@example.com")
     }
         
-    fun insertPassword() {
+    private fun insertPassword() {
         pwdField.shouldBe(visible).clear()
         pwdField.sendKeys("1userUser!")
     }
 
-    fun agreeToConditions() {
+    private fun agreeToConditions() {
         gdprCheckbox.scrollTo().click()
         privacyCheckbox.scrollTo().click()
     }
 
-    fun clickConfirmRegistration() {
+    private fun clickConfirmRegistration() {
         confirmRegisterBtn.shouldBe(visible).click()
     }
 }

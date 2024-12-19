@@ -10,7 +10,6 @@ import com.codeborne.selenide.Selenide.actions
 import com.codeborne.selenide.Condition.text
 import com.codeborne.selenide.Condition.visible
 import com.codeborne.selenide.Condition
-import kotlin.random.Random
 
 public class HomePage {
     private val signInBtn = `$x`("//span[text()='Sign in']")

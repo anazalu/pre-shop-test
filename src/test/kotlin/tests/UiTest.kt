@@ -3,6 +3,7 @@ package tests
 import java.math.BigDecimal
 
 import com.codeborne.selenide.Condition
+import com.codeborne.selenide.Condition.visible
 import com.codeborne.selenide.Selenide.`$`
 import com.codeborne.selenide.Selenide.title
 import com.codeborne.selenide.Selenide.switchTo
@@ -12,8 +13,10 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 
 import base.BaseTest
+import org.example.pages.AddedToCartModal
 import org.example.pages.HomePage
 import org.example.pages.LoginPage
+import org.example.pages.QuickViewModal
 import kotlin.random.Random
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -29,6 +32,8 @@ class UiTest : BaseTest() {
     fun testEntireFlow() {
         val homePage = HomePage()
         val loginPage = LoginPage()
+        val quickViewModal = QuickViewModal()
+        val addedToCartModal = AddedToCartModal()
         val pageTitle = "PrestaShop Live Demo"
         val selectedMinPrice = 18
         val selectedMaxPrice = 23
@@ -74,30 +79,29 @@ class UiTest : BaseTest() {
 
 //        val itemRandom = Random.nextInt(0, homePage.itemCount)
         val itemRandom = 0
-        var runningTotal = BigDecimal(0)
+        var expectedSubtotal = BigDecimal(0)
 
-        val currPrice = homePage.openQuickViewAndSavePrice(itemRandom)
-        runningTotal += currPrice
-        println("RunningTotal: $runningTotal")
+        val actualPrice = homePage.openQuickViewAndSavePrice(itemRandom)
+        var itemCountToAdd = 3
+
+        quickViewModal.addToCart(itemCountToAdd)
+        expectedSubtotal += actualPrice * BigDecimal(itemCountToAdd)
+        println("Expected subtotal: $expectedSubtotal")
+
+        var actualSubtotal = BigDecimal(0)
+
+        try {
+            actualSubtotal = addedToCartModal.actualSubtotalText.shouldBe(visible)
+                .text().trim().substring(1).toBigDecimal()
+        } catch (e: NumberFormatException) {
+            throw IllegalArgumentException("Error: Could not parse the subtotal as a valid number. Check the format.")
+        }
+        println("Actual subtotal: $actualSubtotal")
+
+        assertEquals(expectedSubtotal, actualSubtotal, "Expected: $expectedSubtotal, actual: $actualSubtotal")
+        addedToCartModal.clickContinueShopping()
 
         /*
-                val itemOne = Random.nextInt(0, itemCount)
-                println("ItemOne: $itemOne")
-
-                `$$`(".js-product").get(itemOne).shouldBe(visible).hover()
-                `$$`(".quick-view").get(itemOne).shouldBe(visible, Duration.ofSeconds(50)).click()
-                val priceItemOne = `$`("span.current-price-value").shouldBe(visible, Duration.ofSeconds(30)).text().trim().substring(1).toBigDecimal()
-                println("Price: $priceItemOne")
-                `$`("i.touchspin-up").shouldBe(clickable).click()
-                `$`("input#quantity_wanted").shouldNotHave(Condition.value("1"))
-
-                screenshot("increaseItemCount")
-                `$`("button.add-to-cart").shouldBe(visible).click()
-                val priceItemOneSubtotal = `$`("span.subtotal.value").shouldBe(visible).text().trim().substring(1).toBigDecimal()
-                println("Subtotal: $priceItemOneSubtotal")
-                assertEquals(priceItemOne * BigDecimal(2), priceItemOneSubtotal)
-                `$x`("//button[text()='Continue shopping']").shouldBe(visible).click()
-
                 `$`("#js-active-search-filters .filter-block").shouldBe(visible)
 
                 var itemTwo: Int
