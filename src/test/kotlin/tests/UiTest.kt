@@ -14,10 +14,7 @@ import org.junit.jupiter.api.TestInstance
 
 import base.BaseTest
 import com.codeborne.selenide.SelenideElement
-import org.example.pages.AddedToCartModal
-import org.example.pages.HomePage
-import org.example.pages.LoginPage
-import org.example.pages.QuickViewModal
+import org.example.pages.*
 import kotlin.random.Random
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -45,6 +42,9 @@ class UiTest : BaseTest() {
         val loginPage = LoginPage()
         val quickViewModal = QuickViewModal()
         val addedToCartModal = AddedToCartModal()
+        val cartPage = CartPage()
+        val deliveryPage = DeliveryPage()
+
         val pageTitle = "PrestaShop Live Demo"
         val selectedMinPrice = 16
         val selectedMaxPrice = 41
@@ -127,37 +127,27 @@ class UiTest : BaseTest() {
         assertEquals(expectedSubtotal, actualSubtotalValue, "Expected: $expectedSubtotal, actual: $actualSubtotalValue")
         addedToCartModal.clickProceedToCheckout()
 
+        cartPage.shoppingCartPageDisplayed()
+        val actualTotalValue = parseAndConvertToBigDecimal(cartPage.totalValueText)
+        println("Actual total: $actualTotalValue")
+        assertEquals(expectedSubtotal, actualTotalValue, "Total value mismatch.")
+        cartPage.clickProceedToCheckout()
+
+        deliveryPage.fillInDeliveryInfo(
+            "France",
+            "123 Main Street",
+            "12345",
+            "City"
+            )
+
+        val actualFinalTotal = parseAndConvertToBigDecimal(deliveryPage.finalTotal)
+        assertEquals(expectedSubtotal, actualFinalTotal, "Mismatch")
+
         /*
-                `$x`("//h1[text()='Shopping Cart']").shouldBe(visible)
-                val totalValue = `$`(".cart-summary-line.cart-total .value").shouldBe(visible).text().trim().substring(1).toBigDecimal()
-                println("Total: $totalValue")
-                val expectedTotal = priceItemOneSubtotal.add(priceItemTwo)
-                assertEquals(expectedTotal, totalValue)
-
-                `$x`("//a[text()='Proceed to checkout']").shouldBe(visible).click()
-
-                `$`("#field-id_country").selectOption("France")
-                `$`("#field-id_country option[value='8']").shouldBe(Condition.selected)
-
-                `$`("#field-address1").scrollTo().setValue("123 Main Street")
-                `$`("#field-postcode").scrollTo().setValue("12345")
-                `$`("#field-city").scrollTo().setValue("City")
-
-                `$`("button[name='confirm-addresses']").scrollTo().shouldBe(visible).click()
-                `$`("button[name='confirmDeliveryOption']").scrollTo().shouldBe(visible).click()
-                `$x`("//span[text()='Pay by Check']").shouldBe(visible).click()
-
-                val finalTotal = `$`(".cart-summary-line.cart-total .value").shouldBe(visible).text().trim().substring(1).toBigDecimal()
-                assertEquals(expectedTotal, finalTotal)
-
-                `$`("input[name='conditions_to_approve[terms-and-conditions]']").shouldBe(clickable).click()
-                screenshot("my")
-                `$`("#payment-confirmation .btn.btn-primary.center-block").scrollTo().shouldBe(clickable).click()
+          OrderConfirmedPage
                 `$x`("//p[text()='Your order on PrestaShop is complete.']").scrollTo()
                 `$x`("//li[text()='Payment method: Payments by check']").shouldBe(visible)
-
                 `$`("a.logout").scrollTo().click()
-
                 `$x`("//span[text()='Sign in']").shouldBe(visible, Duration.ofSeconds(20))
                 */
     }
