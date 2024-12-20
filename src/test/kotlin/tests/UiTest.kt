@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 
 import base.BaseTest
+import com.codeborne.selenide.SelenideElement
 import org.example.pages.AddedToCartModal
 import org.example.pages.HomePage
 import org.example.pages.LoginPage
@@ -28,6 +29,16 @@ class UiTest : BaseTest() {
         }
     }
 
+    private fun parseAndConvertToBigDecimal(textElem: SelenideElement): BigDecimal {
+        var bdValue = BigDecimal(0)
+        try {
+            bdValue = textElem.text().trim().substring(1).toBigDecimal()
+        } catch (e: NumberFormatException) {
+            throw IllegalArgumentException("Error: Could not parse the text element as a valid number. Check the format.")
+        }
+        return bdValue
+    }
+
     @Test
     fun testEntireFlow() {
         val homePage = HomePage()
@@ -35,8 +46,8 @@ class UiTest : BaseTest() {
         val quickViewModal = QuickViewModal()
         val addedToCartModal = AddedToCartModal()
         val pageTitle = "PrestaShop Live Demo"
-        val selectedMinPrice = 18
-        val selectedMaxPrice = 23
+        val selectedMinPrice = 16
+        val selectedMaxPrice = 41
 
         assertEquals(pageTitle, title(), "The webpage title does not match")
     
@@ -63,61 +74,60 @@ class UiTest : BaseTest() {
             .text()
         println("Price range after right slider: $priceRange")
 
-        fun validatePricesAreWithinRange(targetMinPrice: BigDecimal, targetMaxPrice: BigDecimal) {
-            try {
-                for (priceSpan in homePage.priceList) {
-                    val price = priceSpan.text().trim().substring(1).toBigDecimal()
-                    println("Current price: $price is within range: $targetMinPrice - $targetMaxPrice")
-                    assertInRange(price, targetMinPrice, targetMaxPrice, "Price out of range.")
-                }
-            } catch (e: NumberFormatException) {
-                throw IllegalArgumentException("Error: Could not parse the price as a valid number. Check the format.")
-            }
+        for (priceSpan in homePage.priceList) {
+            val priceValue = parseAndConvertToBigDecimal(priceSpan)
+            println("Current price: $priceValue is within range: $selectedMinPrice - $selectedMaxPrice")
+            assertInRange(priceValue, BigDecimal(selectedMinPrice), BigDecimal(selectedMaxPrice), "Price out of range.")
         }
 
-        validatePricesAreWithinRange(BigDecimal(selectedMinPrice), BigDecimal(selectedMaxPrice))
-
 //        val itemRandom = Random.nextInt(0, homePage.itemCount)
-        val itemRandom = 0
-        var expectedSubtotal = BigDecimal(0)
 
-        val actualPrice = homePage.openQuickViewAndSavePrice(itemRandom)
-        var itemCountToAdd = 4
+//        val list = mutableListOf("one", "two", "three", "four", "five")
+//        val randomElement = list.asSequence().shuffled().find { true }
+//        val randomElements = list.asSequence().shuffled().take(numberOfElements).toList()
+//        list.removeIf { i -> randomElements.contains(i) }
+
+        var itemRandom = 0
+        var itemCountToAdd = 0
+        var expectedSubtotal = BigDecimal(0)
+        var actualSubtotalValue = BigDecimal(0)
+        var actualPrice = BigDecimal(0)
+
+        // Add first item - WIP generate randomly
+        itemRandom = 1
+        itemCountToAdd = 2
+
+        actualPrice = parseAndConvertToBigDecimal(homePage.openQuickViewAndSavePrice(itemRandom))
 
         quickViewModal.addToCart(itemCountToAdd)
         expectedSubtotal += actualPrice * BigDecimal(itemCountToAdd)
         println("Expected subtotal: $expectedSubtotal")
 
-        var actualSubtotal = BigDecimal(0)
+        val actualSubtotalItemOneText = addedToCartModal.actualSubtotalText.shouldBe(visible)
+        actualSubtotalValue = parseAndConvertToBigDecimal(actualSubtotalItemOneText)
+        println("Actual subtotal: $actualSubtotalValue")
 
-        try {
-            actualSubtotal = addedToCartModal.actualSubtotalText.shouldBe(visible)
-                .text().trim().substring(1).toBigDecimal()
-        } catch (e: NumberFormatException) {
-            throw IllegalArgumentException("Error: Could not parse the subtotal as a valid number. Check the format.")
-        }
-        println("Actual subtotal: $actualSubtotal")
-
-        assertEquals(expectedSubtotal, actualSubtotal, "Expected: $expectedSubtotal, actual: $actualSubtotal")
+        assertEquals(expectedSubtotal, actualSubtotalValue, "Expected: $expectedSubtotal, actual: $actualSubtotalValue")
         addedToCartModal.clickContinueShopping()
 
+        // Add second item
+        itemRandom = 0
+        itemCountToAdd = 1
+
+        actualPrice = parseAndConvertToBigDecimal(homePage.openQuickViewAndSavePrice(itemRandom))
+
+        quickViewModal.addToCart(itemCountToAdd)
+        expectedSubtotal += actualPrice * BigDecimal(itemCountToAdd)
+        println("Expected subtotal: $expectedSubtotal")
+
+        val actualSubtotalItemTwoText = addedToCartModal.actualSubtotalText.shouldBe(visible)
+        actualSubtotalValue = parseAndConvertToBigDecimal(actualSubtotalItemTwoText)
+        println("Actual subtotal: $actualSubtotalValue")
+
+        assertEquals(expectedSubtotal, actualSubtotalValue, "Expected: $expectedSubtotal, actual: $actualSubtotalValue")
+        addedToCartModal.clickProceedToCheckout()
+
         /*
-                `$`("#js-active-search-filters .filter-block").shouldBe(visible)
-
-                var itemTwo: Int
-                do {
-                    itemTwo = Random.nextInt(0, itemCount)
-                } while (itemTwo == itemOne)
-                println("ItemTwo: $itemTwo")
-
-                `$$`(".js-product").get(itemTwo).shouldBe(visible).hover()
-                `$$`(".quick-view").get(itemTwo).shouldBe(visible).click()
-
-                val priceItemTwo = `$`("span.current-price-value").shouldBe(visible, Duration.ofSeconds(30)).text().trim().substring(1).toBigDecimal()
-                println("Price item two: $priceItemTwo")
-                `$`("button.add-to-cart").shouldBe(visible).click()
-                `$x`("//a[text()='Proceed to checkout']").shouldBe(visible).click()
-
                 `$x`("//h1[text()='Shopping Cart']").shouldBe(visible)
                 val totalValue = `$`(".cart-summary-line.cart-total .value").shouldBe(visible).text().trim().substring(1).toBigDecimal()
                 println("Total: $totalValue")

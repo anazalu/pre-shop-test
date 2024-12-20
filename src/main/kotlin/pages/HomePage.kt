@@ -1,15 +1,14 @@
 package org.example.pages
 
 import java.time.Duration
-import java.math.BigDecimal
 
 import com.codeborne.selenide.Selenide.`$`
 import com.codeborne.selenide.Selenide.`$x`
 import com.codeborne.selenide.Selenide.`$$`
 import com.codeborne.selenide.Selenide.actions
-import com.codeborne.selenide.Condition.text
 import com.codeborne.selenide.Condition.visible
 import com.codeborne.selenide.Condition
+import com.codeborne.selenide.SelenideElement
 
 public class HomePage {
     private val signInBtn = `$x`("//span[text()='Sign in']")
@@ -25,17 +24,14 @@ public class HomePage {
     private val defaultMinPrice: Int = 14
     private val defaultMaxPrice: Int = 42
 
-    fun openQuickViewAndSavePrice(itemNumber: Int): BigDecimal {
+    fun openQuickViewAndSavePrice(itemNumber: Int): SelenideElement {
         println("ItemNumber: $itemNumber")
         `$$`(".js-product").get(itemNumber).shouldBe(visible).hover()
         `$$`(".quick-view").get(itemNumber).shouldBe(visible, Duration.ofSeconds(50)).click()
-        val priceCurrentItem = `$`("span.current-price-value")
+        val priceCurrentItemTxt = `$`("span.current-price-value")
             .shouldBe(visible, Duration.ofSeconds(30))
-            .text().trim()
-            .substring(1)
-            .toBigDecimal()
-        println("Price from HomePage class: $priceCurrentItem")
-        return priceCurrentItem
+        println("Price from HomePage class: $priceCurrentItemTxt")
+        return priceCurrentItemTxt
     }
 
     //===========================================
