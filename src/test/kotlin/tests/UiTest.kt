@@ -7,13 +7,14 @@ import com.codeborne.selenide.Condition.visible
 import com.codeborne.selenide.Selenide.`$`
 import com.codeborne.selenide.Selenide.title
 import com.codeborne.selenide.Selenide.switchTo
+import com.codeborne.selenide.SelenideElement
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.fail
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 
 import base.BaseTest
-import com.codeborne.selenide.SelenideElement
+import com.codeborne.selenide.Selenide
 import org.example.pages.*
 import kotlin.random.Random
 
@@ -44,6 +45,7 @@ class UiTest : BaseTest() {
         val addedToCartModal = AddedToCartModal()
         val cartPage = CartPage()
         val deliveryPage = DeliveryPage()
+        val orderConfirmedPage = OrderConfirmedPage()
 
         val pageTitle = "PrestaShop Live Demo"
         val selectedMinPrice = 16
@@ -143,12 +145,9 @@ class UiTest : BaseTest() {
         val actualFinalTotal = parseAndConvertToBigDecimal(deliveryPage.finalTotal)
         assertEquals(expectedSubtotal, actualFinalTotal, "Mismatch")
 
-        /*
-          OrderConfirmedPage
-                `$x`("//p[text()='Your order on PrestaShop is complete.']").scrollTo()
-                `$x`("//li[text()='Payment method: Payments by check']").shouldBe(visible)
-                `$`("a.logout").scrollTo().click()
-                `$x`("//span[text()='Sign in']").shouldBe(visible, Duration.ofSeconds(20))
-                */
+        orderConfirmedPage.orderConfirmedPageDisplayed()
+        orderConfirmedPage.paymentByChequeDisplayed()
+        orderConfirmedPage.clickLogoutBtn()
+        orderConfirmedPage.validateUserIsLoggedOut()
     }
 }
