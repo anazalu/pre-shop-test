@@ -1,41 +1,23 @@
 package tests
 
 import java.math.BigDecimal
+import kotlin.random.Random
 
 import com.codeborne.selenide.Condition
 import com.codeborne.selenide.Condition.visible
 import com.codeborne.selenide.Selenide.`$`
 import com.codeborne.selenide.Selenide.title
 import com.codeborne.selenide.Selenide.switchTo
-import com.codeborne.selenide.SelenideElement
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.fail
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 
 import base.BaseTest
-import com.codeborne.selenide.Selenide
 import org.example.pages.*
-import kotlin.random.Random
+import org.example.util.Helpers
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class UiTest : BaseTest() {
-
-    private fun assertInRange(actual: BigDecimal, min: BigDecimal, max: BigDecimal, message: String) {
-        if (actual < min || actual > max) {
-            fail("$message Actual value is $actual, which is not between $min and $max.")
-        }
-    }
-
-    private fun parseAndConvertToBigDecimal(textElem: SelenideElement): BigDecimal {
-        var bdValue = BigDecimal(0)
-        try {
-            bdValue = textElem.text().trim().substring(1).toBigDecimal()
-        } catch (e: NumberFormatException) {
-            throw IllegalArgumentException("Error: Could not parse the text element as a valid number. Check the format.")
-        }
-        return bdValue
-    }
 
     @Test
     fun testEntireFlow() {
@@ -48,10 +30,10 @@ class UiTest : BaseTest() {
         val orderConfirmedPage = OrderConfirmedPage()
 
         val pageTitle = "PrestaShop Live Demo"
-        val selectedMinPrice = 16
-        val selectedMaxPrice = 41
+        val selectedMinPrice = 18
+        val selectedMaxPrice = 23
 
-        assertEquals(pageTitle, title(), "The webpage title does not match")
+        assertEquals(pageTitle, title(), "Expected: $pageTitle, actual: ${title()}")
     
         switchTo().frame("framelive")
 
@@ -67,27 +49,23 @@ class UiTest : BaseTest() {
 
         homePage.selectMinPrice(selectedMinPrice)
         var priceRange = `$`("#js-active-search-filters .filter-block").scrollTo().text()
-        println("Price range after left slider: $priceRange")
 
         homePage.selectMaxPrice(selectedMaxPrice)
         priceRange = `$`("#js-active-search-filters .filter-block")
             .scrollTo()
             .shouldNotHave(Condition.text(priceRange))
             .text()
-        println("Price range after right slider: $priceRange")
 
+        var filteredItems = 0
         for (priceSpan in homePage.priceList) {
-            val priceValue = parseAndConvertToBigDecimal(priceSpan)
+            val priceValue = Helpers.parseAndConvertToBigDecimal(priceSpan)
             println("Current price: $priceValue is within range: $selectedMinPrice - $selectedMaxPrice")
-            assertInRange(priceValue, BigDecimal(selectedMinPrice), BigDecimal(selectedMaxPrice), "Price out of range.")
+            assertInRange(
+                priceValue, BigDecimal(selectedMinPrice), BigDecimal(selectedMaxPrice),
+                "Price $priceValue out of range $selectedMinPrice to $selectedMaxPrice."
+            )
+            filteredItems++
         }
-
-//        val itemRandom = Random.nextInt(0, homePage.itemCount)
-
-//        val list = mutableListOf("one", "two", "three", "four", "five")
-//        val randomElement = list.asSequence().shuffled().find { true }
-//        val randomElements = list.asSequence().shuffled().take(numberOfElements).toList()
-//        list.removeIf { i -> randomElements.contains(i) }
 
         var itemRandom = 0
         var itemCountToAdd = 0
@@ -95,44 +73,47 @@ class UiTest : BaseTest() {
         var actualSubtotalValue = BigDecimal(0)
         var actualPrice = BigDecimal(0)
 
-        // Add first item - WIP generate randomly
-        itemRandom = 1
-        itemCountToAdd = 2
+        // Generate 2 distinct numbers for selecting 2 items
+        val randomNumbers = (0..filteredItems - 1).shuffled().take(2)
+        println(filteredItems)
+        println(randomNumbers)
 
-        actualPrice = parseAndConvertToBigDecimal(homePage.openQuickViewAndSavePrice(itemRandom))
+        // Add first item, two pieces
+//        itemRandom = Random.nextInt(0, filteredItems)
+        itemRandom = randomNumbers[0]
+        itemCountToAdd = 2 // as per task
 
+        actualPrice = Helpers.parseAndConvertToBigDecimal(homePage.openQuickViewAndSavePrice(itemRandom))
         quickViewModal.addToCart(itemCountToAdd)
         expectedSubtotal += actualPrice * BigDecimal(itemCountToAdd)
-        println("Expected subtotal: $expectedSubtotal")
 
         val actualSubtotalItemOneText = addedToCartModal.actualSubtotalText.shouldBe(visible)
-        actualSubtotalValue = parseAndConvertToBigDecimal(actualSubtotalItemOneText)
-        println("Actual subtotal: $actualSubtotalValue")
-
+        actualSubtotalValue = Helpers.parseAndConvertToBigDecimal(actualSubtotalItemOneText)
         assertEquals(expectedSubtotal, actualSubtotalValue, "Expected: $expectedSubtotal, actual: $actualSubtotalValue")
         addedToCartModal.clickContinueShopping()
 
-        // Add second item
-        itemRandom = 0
-        itemCountToAdd = 1
+        // Add second item, one piece
+//        itemRandom = Helpers.selectNextRandomItem(filteredItems, itemRandom)
+        itemRandom = randomNumbers[1]
+        itemCountToAdd = 1 // as per task
 
-        actualPrice = parseAndConvertToBigDecimal(homePage.openQuickViewAndSavePrice(itemRandom))
+        actualPrice = Helpers.parseAndConvertToBigDecimal(homePage.openQuickViewAndSavePrice(itemRandom))
 
         quickViewModal.addToCart(itemCountToAdd)
         expectedSubtotal += actualPrice * BigDecimal(itemCountToAdd)
         println("Expected subtotal: $expectedSubtotal")
 
         val actualSubtotalItemTwoText = addedToCartModal.actualSubtotalText.shouldBe(visible)
-        actualSubtotalValue = parseAndConvertToBigDecimal(actualSubtotalItemTwoText)
+        actualSubtotalValue = Helpers.parseAndConvertToBigDecimal(actualSubtotalItemTwoText)
         println("Actual subtotal: $actualSubtotalValue")
 
         assertEquals(expectedSubtotal, actualSubtotalValue, "Expected: $expectedSubtotal, actual: $actualSubtotalValue")
         addedToCartModal.clickProceedToCheckout()
 
         cartPage.shoppingCartPageDisplayed()
-        val actualTotalValue = parseAndConvertToBigDecimal(cartPage.totalValueText)
+        val actualTotalValue = Helpers.parseAndConvertToBigDecimal(cartPage.totalValueText)
         println("Actual total: $actualTotalValue")
-        assertEquals(expectedSubtotal, actualTotalValue, "Total value mismatch.")
+        assertEquals(expectedSubtotal, actualTotalValue, "Expected: $expectedSubtotal, actual: $actualTotalValue")
         cartPage.clickProceedToCheckout()
 
         deliveryPage.fillInDeliveryInfo(
@@ -142,8 +123,8 @@ class UiTest : BaseTest() {
             "City"
             )
 
-        val actualFinalTotal = parseAndConvertToBigDecimal(deliveryPage.finalTotal)
-        assertEquals(expectedSubtotal, actualFinalTotal, "Mismatch")
+        val actualFinalTotal = Helpers.parseAndConvertToBigDecimal(deliveryPage.finalTotal)
+        assertEquals(expectedSubtotal, actualFinalTotal, "Expected: $expectedSubtotal, actual: $actualFinalTotal")
 
         orderConfirmedPage.orderConfirmedPageDisplayed()
         orderConfirmedPage.paymentByChequeDisplayed()

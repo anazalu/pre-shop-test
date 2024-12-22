@@ -5,7 +5,7 @@ import com.codeborne.selenide.Selenide.`$`
 import com.codeborne.selenide.Selenide.`$x`
 import java.time.Duration
 
-public class OrderConfirmedPage {
+class OrderConfirmedPage {
     private val orderIsCompleteText = `$x`("//p[text()='Your order on PrestaShop is complete.']")
     private val paymentByChequeText = `$x`("//li[text()='Payment method: Payments by check']")
     private val logoutBtn = `$`("a.logout")

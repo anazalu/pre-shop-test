@@ -5,7 +5,7 @@ import com.codeborne.selenide.Condition.visible
 
 import kotlin.random.Random
 
-public class LoginPage {
+class LoginPage {
     private val startRegistrationBtn = `$`("a[data-link-action='display-register-form']")
     private val firstnameField = `$`("#field-firstname")
     private val lastnameField = `$`("#field-lastname")

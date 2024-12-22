@@ -5,7 +5,7 @@ import com.codeborne.selenide.Condition.clickable
 import com.codeborne.selenide.Selenide.`$`
 import com.codeborne.selenide.Selenide.`$x`
 
-public class DeliveryPage {
+class DeliveryPage {
     val finalTotal = `$`(".cart-summary-line.cart-total .value")
     private val countryNameField = `$`("#field-id_country")
     private val address1Field = `$`("#field-address1")
