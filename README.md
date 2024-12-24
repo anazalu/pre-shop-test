@@ -1,6 +1,6 @@
 ### The test is located:
 
-src/test/kotlin/UiTest.kt
+src/test/kotlin/tests/UiTest.kt
 
 ### Running tests from command line:
 
