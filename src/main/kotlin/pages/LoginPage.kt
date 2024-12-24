@@ -3,8 +3,6 @@ package org.example.pages
 import com.codeborne.selenide.Selenide.`$`
 import com.codeborne.selenide.Condition.visible
 
-import kotlin.random.Random
-
 class LoginPage {
     private val startRegistrationBtn = `$`("a[data-link-action='display-register-form']")
     private val firstnameField = `$`("#field-firstname")
@@ -39,9 +37,9 @@ class LoginPage {
     }
         
     private fun insertEmail() {
-        val randEmail = Random.nextInt(1111, 9999)
+        val randNum = (1111..9999).shuffled().take(1)[0]
         emailField.shouldBe(visible).clear()
-        emailField.sendKeys("user$randEmail@example.com")
+        emailField.sendKeys("user$randNum@example.com")
     }
         
     private fun insertPassword() {

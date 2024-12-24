@@ -15,19 +15,5 @@ class Helpers {
             }
             return bdValue
         }
-
-        fun selectNextRandomItem(itemListSize: Int, itemAlreadyUsed: Int): Int {
-            val randomList = mutableListOf(0)
-
-            for (itemNum in 1..itemListSize - 1) {
-                randomList.add(itemNum)
-            }
-
-            randomList.remove(itemAlreadyUsed)
-
-            val randomIndex = Random.nextInt(randomList.size)
-            val randomElement = randomList[randomIndex]
-            return randomElement
-        }
     }
 }

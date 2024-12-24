@@ -1,7 +1,6 @@
 package tests
 
 import java.math.BigDecimal
-import kotlin.random.Random
 
 import com.codeborne.selenide.Condition
 import com.codeborne.selenide.Condition.visible
@@ -75,11 +74,10 @@ class UiTest : BaseTest() {
 
         // Generate 2 distinct numbers for selecting 2 items
         val randomNumbers = (0..filteredItems - 1).shuffled().take(2)
-        println(filteredItems)
-        println(randomNumbers)
+        println("Filtered out $filteredItems items")
+        println("Selected 2 items numbered: $randomNumbers")
 
         // Add first item, two pieces
-//        itemRandom = Random.nextInt(0, filteredItems)
         itemRandom = randomNumbers[0]
         itemCountToAdd = 2 // as per task
 
@@ -93,7 +91,6 @@ class UiTest : BaseTest() {
         addedToCartModal.clickContinueShopping()
 
         // Add second item, one piece
-//        itemRandom = Helpers.selectNextRandomItem(filteredItems, itemRandom)
         itemRandom = randomNumbers[1]
         itemCountToAdd = 1 // as per task
 
