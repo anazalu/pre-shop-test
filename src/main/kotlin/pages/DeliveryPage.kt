@@ -19,7 +19,6 @@ class DeliveryPage {
 
     fun fillInDeliveryInfo(country: String, streetAddress: String, postcode: String, city: String) {
         countryNameField.shouldBe(visible).selectOption(country)
-//    `$`("#field-id_country option[value='8']").shouldBe(Condition.selected)
         address1Field.scrollTo().setValue(streetAddress)
         postCodeField.scrollTo().setValue(postcode)
         cityField.scrollTo().setValue(city)

@@ -16,7 +16,12 @@ class HomePage {
     private val homeAccessoriesBtn = `$x`("//a[text()='Home Accessories']")
     private val homeAccessoriesHeading = `$x`("//h1[text()='Home Accessories']")
     private val sliderParent = `$`(".faceted-slider")
+    private val leftHandle = sliderParent.`$x`(".//a[contains(@class, 'ui-slider-handle')][1]")
+    private val rightHandle = sliderParent.`$x`(".//a[contains(@class, 'ui-slider-handle')][2]")
     val priceList = `$$`("span.price")
+    private val priceElem = `$`("span.current-price-value")
+    private val prodList = `$$`(".js-product")
+    private val quickViewList = `$$`(".quick-view")
 
     fun clickSignInBtn() {
         signInBtn.shouldBe(visible, Duration.ofSeconds(50)).click()
@@ -54,22 +59,20 @@ class HomePage {
 
     fun selectMinPrice(targetMinPrice: Int) {
         val leftOffset = (targetMinPrice - getMinPriceFromSlider()) * calculateSliderOffset()
-        val leftSlider = sliderParent.`$x`(".//a[contains(@class, 'ui-slider-handle')][1]").scrollTo()
+        val leftSlider = leftHandle.scrollTo()
         actions().clickAndHold(leftSlider).moveByOffset(leftOffset.toInt(), 0).release().perform()
     }
 
     fun selectMaxPrice(targetMaxPrice: Int) {
         val rightOffset = (targetMaxPrice - getMaxPriceFromSlider()) * calculateSliderOffset()
-        val rightSlider = sliderParent.`$x`(".//a[contains(@class, 'ui-slider-handle')][2]").scrollTo()
+        val rightSlider = rightHandle.scrollTo()
         actions().clickAndHold(rightSlider).moveByOffset(rightOffset.toInt(), 0).release().perform()
     }
 
     fun openQuickViewAndSavePrice(itemNumber: Int): SelenideElement {
-        println("ItemNumber: $itemNumber")
-        `$$`(".js-product").get(itemNumber).shouldBe(visible).hover()
-        `$$`(".quick-view").get(itemNumber).shouldBe(visible, Duration.ofSeconds(30)).click()
-        val priceCurrentItemTxt = `$`("span.current-price-value")
-            .shouldBe(visible, Duration.ofSeconds(30))
+        prodList.get(itemNumber).shouldBe(visible).hover()
+        quickViewList.get(itemNumber).shouldBe(visible, Duration.ofSeconds(30)).click()
+        val priceCurrentItemTxt = priceElem.shouldBe(visible, Duration.ofSeconds(30))
         return priceCurrentItemTxt
     }
 }
