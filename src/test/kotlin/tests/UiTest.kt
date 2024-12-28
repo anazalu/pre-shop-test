@@ -29,8 +29,9 @@ class UiTest : BaseTest() {
         val orderConfirmedPage = OrderConfirmedPage()
 
         val pageTitle = "PrestaShop Live Demo"
-        val selectedMinPrice = 18
-        val selectedMaxPrice = 23
+        val selectedMinPrice = 18 // as per requirements
+        val selectedMaxPrice = 23 // as per requirements
+        val priceRangeElem = `$`("#js-active-search-filters .filter-block")
 
         assertEquals(pageTitle, title(), "Expected: $pageTitle, actual: ${title()}")
     
@@ -47,20 +48,18 @@ class UiTest : BaseTest() {
         homePage.validateHomeAccessoriesDisplayed()
 
         homePage.selectMinPrice(selectedMinPrice)
-        var priceRange = `$`("#js-active-search-filters .filter-block").scrollTo().text()
+        var priceRange = priceRangeElem.scrollTo().text()
 
         homePage.selectMaxPrice(selectedMaxPrice)
-        priceRange = `$`("#js-active-search-filters .filter-block")
-            .scrollTo()
-            .shouldNotHave(Condition.text(priceRange))
-            .text()
+        priceRange = priceRangeElem.scrollTo().shouldNotHave(Condition.text(priceRange)).text()
 
         var filteredItems = 0
         for (priceSpan in homePage.priceList) {
             val priceValue = Helpers.parseAndConvertToBigDecimal(priceSpan)
-            println("Current price: $priceValue is within range: $selectedMinPrice - $selectedMaxPrice")
             assertInRange(
-                priceValue, BigDecimal(selectedMinPrice), BigDecimal(selectedMaxPrice),
+                priceValue,
+                BigDecimal(selectedMinPrice),
+                BigDecimal(selectedMaxPrice),
                 "Price $priceValue out of range $selectedMinPrice to $selectedMaxPrice."
             )
             filteredItems++
@@ -74,8 +73,6 @@ class UiTest : BaseTest() {
 
         // Generate 2 distinct numbers for selecting 2 items
         val randomNumbers = (0..filteredItems - 1).shuffled().take(2)
-        println("Filtered out $filteredItems items")
-        println("Selected 2 items numbered: $randomNumbers")
 
         // Add first item, two pieces
         itemRandom = randomNumbers[0]
@@ -98,18 +95,15 @@ class UiTest : BaseTest() {
 
         quickViewModal.addToCart(itemCountToAdd)
         expectedSubtotal += actualPrice * BigDecimal(itemCountToAdd)
-        println("Expected subtotal: $expectedSubtotal")
 
         val actualSubtotalItemTwoText = addedToCartModal.actualSubtotalText.shouldBe(visible)
         actualSubtotalValue = Helpers.parseAndConvertToBigDecimal(actualSubtotalItemTwoText)
-        println("Actual subtotal: $actualSubtotalValue")
 
         assertEquals(expectedSubtotal, actualSubtotalValue, "Expected: $expectedSubtotal, actual: $actualSubtotalValue")
         addedToCartModal.clickProceedToCheckout()
 
         cartPage.shoppingCartPageDisplayed()
         val actualTotalValue = Helpers.parseAndConvertToBigDecimal(cartPage.totalValueText)
-        println("Actual total: $actualTotalValue")
         assertEquals(expectedSubtotal, actualTotalValue, "Expected: $expectedSubtotal, actual: $actualTotalValue")
         cartPage.clickProceedToCheckout()
 

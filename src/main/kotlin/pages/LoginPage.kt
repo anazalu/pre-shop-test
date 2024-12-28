@@ -12,47 +12,32 @@ class LoginPage {
     private val gdprCheckbox = `$`("input[name='psgdpr']")
     private val privacyCheckbox = `$`("input[name='customer_privacy']")
     private val confirmRegisterBtn = `$`("#customer-form > footer > button")
+    private val randNumList = (1111..9999).shuffled().take(2)
+    private val randNum1 = randNumList[0]
+    private val randNum2 = randNumList[1]
+    val email = "user$randNum1@example.com"
+    val password = "!xf#Tsw!$randNum2"
 
     fun startRegistration() {
         startRegistrationBtn.shouldBe(visible).click()
     }
 
     fun completeRegistration(firstName: String, lastName: String) {
-        insertFirstname(firstName)
-        insertLastname(lastName)
-        insertEmail()
-        insertPassword()
-        agreeToConditions()
-        clickConfirmRegistration()
-    }
-
-    private fun insertFirstname(firstName: String) {
         firstnameField.shouldBe(visible).clear()
         firstnameField.sendKeys(firstName)
-    }
-        
-    private fun insertLastname(lastName: String) {
+
         lastnameField.shouldBe(visible).clear()
         lastnameField.sendKeys(lastName)
-    }
-        
-    private fun insertEmail() {
-        val randNum = (1111..9999).shuffled().take(1)[0]
-        emailField.shouldBe(visible).clear()
-        emailField.sendKeys("user$randNum@example.com")
-    }
-        
-    private fun insertPassword() {
-        pwdField.shouldBe(visible).clear()
-        pwdField.sendKeys("1userUser!")
-    }
 
-    private fun agreeToConditions() {
+        emailField.shouldBe(visible).clear()
+        emailField.sendKeys(email)
+
+        pwdField.shouldBe(visible).clear()
+        pwdField.sendKeys(password)
+
         gdprCheckbox.scrollTo().click()
         privacyCheckbox.scrollTo().click()
-    }
 
-    private fun clickConfirmRegistration() {
         confirmRegisterBtn.shouldBe(visible).click()
     }
 }
