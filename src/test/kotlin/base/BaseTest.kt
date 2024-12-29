@@ -6,8 +6,18 @@ import com.codeborne.selenide.WebDriverRunner
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.fail
 import java.math.BigDecimal
+import org.example.pages.*
 
 open class BaseTest {
+    val homePage = HomePage()
+    val loginPage = LoginPage()
+    val quickViewModal = QuickViewModal()
+    val addedToCartModal = AddedToCartModal()
+    val cartPage = CartPage()
+    val deliveryPage = DeliveryPage()
+    val orderConfirmedPage = OrderConfirmedPage()
+    
+    val pageTitle = "PrestaShop Live Demo"
 
     companion object {
         @JvmStatic

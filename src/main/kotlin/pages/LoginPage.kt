@@ -1,17 +1,19 @@
 package org.example.pages
 
-import com.codeborne.selenide.Selenide.`$`
+import com.codeborne.selenide.Condition.clickable
 import com.codeborne.selenide.Condition.visible
+import com.codeborne.selenide.Selenide.`$`
 
 class LoginPage {
     private val startRegistrationBtn = `$`("a[data-link-action='display-register-form']")
     private val firstnameField = `$`("#field-firstname")
     private val lastnameField = `$`("#field-lastname")
-    private val emailField = `$`("#field-email")
-    private val pwdField = `$`("#field-password")
+    val emailField = `$`("#field-email")
+    val pwdField = `$`("#field-password")
     private val gdprCheckbox = `$`("input[name='psgdpr']")
     private val privacyCheckbox = `$`("input[name='customer_privacy']")
     private val confirmRegisterBtn = `$`("#customer-form > footer > button")
+    private val signInButton = `$`("#submit-login")
     private val randNumList = (1111..9999).shuffled().take(2)
     private val randNum1 = randNumList[0]
     private val randNum2 = randNumList[1]
@@ -39,5 +41,9 @@ class LoginPage {
         privacyCheckbox.scrollTo().click()
 
         confirmRegisterBtn.shouldBe(visible).click()
+    }
+
+    fun clickSignInBtn() {
+        signInButton.shouldBe(clickable).click()
     }
 }
