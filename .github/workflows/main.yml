@@ -49,3 +49,8 @@ jobs:
 
 #      - name: Build with Gradle
 #        run: ./gradlew build
+      - name: Upload test report as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-report
+          path: build/reports/tests/test/index.html
