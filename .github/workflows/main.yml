@@ -42,7 +42,7 @@ jobs:
       - name: Install ChromeDriver
         uses: nanasess/setup-chromedriver@v1
         with:
-          version: 'latest'
+          chromedriver-version: 'latest'
 
       - name: Run tests
         run: ./gradlew test
