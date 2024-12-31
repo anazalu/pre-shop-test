@@ -12,8 +12,6 @@ class LoginTest : BaseTest() {
         homePage.clickSignInBtn()
         loginPage.startRegistration()
         loginPage.completeRegistration("MyFirstName", "MyLastName")
-        println(loginPage.email)
-        println(loginPage.password)
         homePage.validateUserIsLoggedIn()
         orderConfirmedPage.clickLogoutBtn()
         orderConfirmedPage.validateUserIsLoggedOut()
@@ -21,10 +19,15 @@ class LoginTest : BaseTest() {
         homePage.clickSignInBtn()
         loginPage.emailField.shouldBe(visible).clear()
         loginPage.emailField.sendKeys(loginPage.email)
+
+        loginPage.pwdField.shouldBe(visible).clear()
+        loginPage.pwdField.sendKeys("incorrectPassword")
+        loginPage.clickSignInBtn()
+        orderConfirmedPage.validateUserIsLoggedOut()
+        loginPage.validateAuthFailed()
+
         loginPage.pwdField.shouldBe(visible).clear()
         loginPage.pwdField.sendKeys(loginPage.password)
-        println(loginPage.email)
-        println(loginPage.password)
         loginPage.clickSignInBtn()
         homePage.validateUserIsLoggedIn()
 

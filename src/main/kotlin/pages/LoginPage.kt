@@ -3,6 +3,7 @@ package org.example.pages
 import com.codeborne.selenide.Condition.clickable
 import com.codeborne.selenide.Condition.visible
 import com.codeborne.selenide.Selenide.`$`
+import com.codeborne.selenide.Selenide.`$x`
 
 class LoginPage {
     private val startRegistrationBtn = `$`("a[data-link-action='display-register-form']")
@@ -19,6 +20,8 @@ class LoginPage {
     private val randNum2 = randNumList[1]
     val email = "user$randNum1@example.com"
     val password = "!xf#Tsw!$randNum2"
+    private val authFailedAlert = `$x`("//li[text()='Authentication failed.']")
+
 
     fun startRegistration() {
         startRegistrationBtn.shouldBe(visible).click()
@@ -45,5 +48,9 @@ class LoginPage {
 
     fun clickSignInBtn() {
         signInButton.shouldBe(clickable).click()
+    }
+
+    fun validateAuthFailed() {
+        authFailedAlert.shouldBe(visible)
     }
 }
