@@ -39,6 +39,13 @@ jobs:
 #          unzip /tmp/chromedriver_linux64.zip -d /usr/local/bin/
 #          chmod +x /usr/local/bin/chromedriver
 #          chromedriver --version
+      - name: Install ChromeDriver
+        uses: nanasess/setup-chromedriver@v1
+        with:
+          version: 'latest'
 
-      - name: Build with Gradle
-        run: ./gradlew build
+      - name: Run tests
+        run: ./gradlew test
+
+#      - name: Build with Gradle
+#        run: ./gradlew build
