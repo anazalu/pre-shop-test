@@ -17,23 +17,13 @@ jobs:
 
       - name: Set up Chrome
         run: |
-          sudo apt-get update
-          sudo apt-get install -y google-chrome-stable
+          google-chrome --version
+          chromedriver --version
 
-      - name: Check Chrome version
-        run: google-chrome --version
-
-      - name: Match Chromedriver to Chrome
+      - name: Print versions
         run: |
-          CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+')
-          CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION")
-          echo "Installing Chromedriver $CHROMEDRIVER_VERSION"
-          curl -o chromedriver.zip "https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip"
-          unzip chromedriver.zip -d /usr/local/bin
-          chmod +x /usr/local/bin/chromedriver
-
-      - name: Check Chromedriver version
-        run: chromedriver --version
+          google-chrome --version
+          chromedriver --version
 
       - name: Build and Test
         run: ./gradlew clean test
