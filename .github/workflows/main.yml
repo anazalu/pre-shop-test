@@ -15,15 +15,21 @@ jobs:
           java-version: 17
           distribution: temurin
 
-      - name: Set up Chrome
-        run: |
-          google-chrome --version
-          chromedriver --version
+      - name: Print Google Chrome version
+        run: google-chrome --version
 
-      - name: Print versions
+      - name: Install matching Chromedriver
         run: |
-          google-chrome --version
-          chromedriver --version
+          CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+')
+          CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION")
+          echo "Installing Chromedriver $CHROMEDRIVER_VERSION"
+          curl -o chromedriver.zip "https://chromedriver.storage.googleapis.com/$CHROME_VERSION/chromedriver_linux64.zip"
+          unzip chromedriver.zip -d /usr/local/bin
+          chmod +x /usr/local/bin/chromedriver
+        shell: bash
+
+      - name: Print Chromedriver version
+        run: chromedriver --version
 
       - name: Build and Test
         run: ./gradlew clean test
