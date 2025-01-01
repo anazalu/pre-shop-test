@@ -5,11 +5,16 @@ on:
 
 jobs:
   e2e-tests:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Set up Chrome and Chromedriver
+        uses: nanasess/setup-chromedriver@v1
+        with:
+          chromedriver-version: 117.0.5938.62
 
       - name: Print Chromedriver versions
         run: |
