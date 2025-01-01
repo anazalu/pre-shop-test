@@ -5,7 +5,7 @@ on:
 
 jobs:
   e2e-tests:
-    runs-on: ubuntu-24.04-20241215.1 # ubuntu-latest
+    runs-on: ubuntu-20.04-20241215.1 # ubuntu-latest
 
     steps:
       - name: Checkout code
