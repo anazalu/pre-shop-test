@@ -1,35 +1,36 @@
-name: Build and Test
+name: Run E2E Tests
 
 on:
   push
 
 jobs:
-  build:
+  e2e-tests:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Set up Java
-        uses: actions/setup-java@v3
+      - name: Set up JDK
+        uses: actions/setup-java@v4
         with:
-          java-version: 17
-          distribution: temurin
+          distribution: 'temurin'
+          java-version: '17' # Or your desired Java version
 
-      - name: Print Google Chrome version
-        run: google-chrome --version
+      - name: Set up Gradle
+        uses: gradle/gradle-build-action@v2
 
-      - name: Install matching Chromedriver
-        run: |
-          CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+')
-          CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION")
-          echo "Installing Chromedriver $CHROMEDRIVER_VERSION"
-          curl -o chromedriver.zip "https://chromedriver.storage.googleapis.com/$CHROME_VERSION/chromedriver_linux64.zip"
-          unzip chromedriver.zip -d /usr/local/bin
-          chmod +x /usr/local/bin/chromedriver
-        shell: bash
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
 
-      - name: Print Chromedriver version
-        run: chromedriver --version
+      - name: Run Gradle tests
+        run: ./gradlew test
+        env:
+          BROWSER: chrome # Or your default browser
 
-      - name: Build and Test
-        run: ./gradlew clean test
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: build/reports/tests/test # Path to the test reports. Adjust as needed
