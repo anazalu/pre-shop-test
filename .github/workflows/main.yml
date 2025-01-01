@@ -5,7 +5,7 @@ on:
 
 jobs:
   e2e-tests:
-    runs-on: ubuntu-20.04-20241215.1 # ubuntu-latest
+    runs-on: ubuntu-20.04
 
     steps:
       - name: Checkout code
@@ -20,7 +20,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '17' # Or your desired Java version
+          java-version: '17'
 
       - name: Set up Gradle
         uses: gradle/gradle-build-action@v2
@@ -31,11 +31,11 @@ jobs:
       - name: Run Gradle tests
         run: ./gradlew test
         env:
-          BROWSER: chrome # Or your default browser
+          BROWSER: chrome
 
       - name: Upload Test Results
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: test-results
-          path: build/reports/tests/test # Path to the test reports. Adjust as needed
+          path: build/reports/tests/test
