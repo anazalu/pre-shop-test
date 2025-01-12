@@ -20,7 +20,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
 
     // Selenium WebDriver (used by Selenide internally)
-    implementation("org.seleniumhq.selenium:selenium-java:4.13.0")
+    implementation("org.seleniumhq.selenium:selenium-java:4.15.0")
 
 }
 

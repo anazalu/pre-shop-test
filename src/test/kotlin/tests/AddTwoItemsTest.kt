@@ -5,30 +5,20 @@ import java.math.BigDecimal
 import com.codeborne.selenide.Condition
 import com.codeborne.selenide.Condition.visible
 import com.codeborne.selenide.Selenide.`$`
-import com.codeborne.selenide.Selenide.title
 import com.codeborne.selenide.Selenide.switchTo
+import com.codeborne.selenide.Selenide.title
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 
 import base.BaseTest
-import org.example.pages.*
 import org.example.util.Helpers
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class UiTest : BaseTest() {
+class AddTwoItemsTest : BaseTest() {
 
     @Test
     fun testEntireFlow() {
-        val homePage = HomePage()
-        val loginPage = LoginPage()
-        val quickViewModal = QuickViewModal()
-        val addedToCartModal = AddedToCartModal()
-        val cartPage = CartPage()
-        val deliveryPage = DeliveryPage()
-        val orderConfirmedPage = OrderConfirmedPage()
-
-        val pageTitle = "PrestaShop Live Demo"
         val selectedMinPrice = 18 // as per requirements
         val selectedMaxPrice = 23 // as per requirements
         val priceRangeElem = `$`("#js-active-search-filters .filter-block")
