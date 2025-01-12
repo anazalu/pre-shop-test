@@ -17,15 +17,30 @@ class LoginTest : BaseTest() {
         orderConfirmedPage.validateUserIsLoggedOut()
 
         homePage.clickSignInBtn()
+
         loginPage.emailField.shouldBe(visible).clear()
         loginPage.emailField.sendKeys(loginPage.email)
-
         loginPage.pwdField.shouldBe(visible).clear()
         loginPage.pwdField.sendKeys("incorrectPassword")
         loginPage.clickSignInBtn()
         orderConfirmedPage.validateUserIsLoggedOut()
         loginPage.validateAuthFailed()
 
+        loginPage.pwdField.shouldBe(visible).clear()
+        loginPage.clickSignInBtn()
+        orderConfirmedPage.validateUserIsLoggedOut()
+        loginPage.validateAuthFailed()
+
+        loginPage.emailField.shouldBe(visible).clear()
+//        loginPage.emailField.sendKeys("notregisteredemail@example.com")
+        loginPage.pwdField.shouldBe(visible).clear()
+        loginPage.pwdField.sendKeys(loginPage.password)
+        loginPage.clickSignInBtn()
+        orderConfirmedPage.validateUserIsLoggedOut()
+        loginPage.validateAuthFailed()
+
+        loginPage.emailField.shouldBe(visible).clear()
+        loginPage.emailField.sendKeys(loginPage.email)
         loginPage.pwdField.shouldBe(visible).clear()
         loginPage.pwdField.sendKeys(loginPage.password)
         loginPage.clickSignInBtn()

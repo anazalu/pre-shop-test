@@ -17,7 +17,7 @@ class LoginPage {
     private val signInButton = `$`("#submit-login")
     private val randNumList = (1111..9999).shuffled().take(2)
     private val randNum1 = randNumList[0]
-    private val randNum2 = randNumList[1]
+    val randNum2 = randNumList[1]
     val email = "user$randNum1@example.com"
     val password = "!xf#Tsw!$randNum2"
     private val authFailedAlert = `$x`("//li[text()='Authentication failed.']")
